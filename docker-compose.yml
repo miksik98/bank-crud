@@ -1,0 +1,14 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - 5454:5432
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=bank
+    restart: always
+    volumes:
+      - ./sql/create_clients.sql:/docker-entrypoint-initdb.d/create_clients.sql
