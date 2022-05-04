@@ -5,11 +5,11 @@ import org.scalatest.matchers.should.Matchers
 
 class ClientSortFieldTest extends AnyFunSuite with Matchers {
   test("Applying fromString method with illegal parameter is Invalid") {
-    ClientSortField.fromString("x").isInvalid shouldBe true
+    ClientSortField.fromString("x").isEmpty shouldBe true
   }
 
   test("Domain fields should be mapped for enums") {
-    def validTest[T](s: String, f: ClientSortField[T]) = ClientSortField.fromString(s).toOption shouldBe Some(f)
+    def validTest[T](s: String, f: ClientSortField[T]) = ClientSortField.fromString(s) shouldBe Some(f)
     validTest("name", ClientSortField.Name)
     validTest("surname", ClientSortField.Surname)
     validTest("birthYear", ClientSortField.BirthYear)

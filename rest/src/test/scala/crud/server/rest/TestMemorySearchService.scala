@@ -35,11 +35,11 @@ object TestMemorySearchService
     Client(3, "Piotr", "Nowak", 2010, 200)
   )
 
-  override def validateGetManyQuery(form: ManyQueryForm): Validated[String, TestGetManyQuery] = Valid(TestGetManyQuery(form.adult))
+  override def validateGetManyQuery(form: ManyQueryForm): AllErrorsOr[TestGetManyQuery] = Valid(TestGetManyQuery(form.adult))
 
-  override def validateCreateQuery(form: CreateQueryForm): Validated[String, TestCreateQuery] = Valid(TestCreateQuery(form.name, form.surname, form.birthYear))
+  override def validateCreateQuery(form: CreateQueryForm): AllErrorsOr[TestCreateQuery] = Valid(TestCreateQuery(form.name, form.surname, form.birthYear))
 
-  override def validateUpdateQuery(form: UpdateQueryForm): Validated[String, TestUpdateQuery] = Valid(TestUpdateQuery(form.id, form.money))
+  override def validateUpdateQuery(form: UpdateQueryForm): AllErrorsOr[TestUpdateQuery] = Valid(TestUpdateQuery(form.id, form.money))
 
   override def getMany(query: TestGetManyQuery): Future[Seq[Client]] = {
     val filtered = query.adult match {

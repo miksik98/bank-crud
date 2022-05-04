@@ -1,6 +1,6 @@
 package crud.server.api.search
 
-import cats.data.Validated
+import cats.data.{NonEmptyList, Validated, ValidatedNel}
 import crud.server.api.db.entity.Entity
 import crud.server.api.query.{CreateQuery, GetManyQuery, UpdateQuery}
 
@@ -16,10 +16,11 @@ trait SearchService[
   UQF <: AbstractUpdateQueryForm
 ] {
   final type Id = E#Id
+  final type AllErrorsOr[A] = ValidatedNel[String, A]
 
-  def validateGetManyQuery(form: MQF): Validated[String, M]
-  def validateCreateQuery(form: CQF): Validated[String, C]
-  def validateUpdateQuery(form: UQF): Validated[String, U]
+  def validateGetManyQuery(form: MQF): AllErrorsOr[M]
+  def validateCreateQuery(form: CQF): AllErrorsOr[C]
+  def validateUpdateQuery(form: UQF): AllErrorsOr[U]
 
   def getMany(query: M): Future[Seq[E]]
   def get(id: Id): Future[Option[E]]

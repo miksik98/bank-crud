@@ -1,7 +1,6 @@
 package crud.server.bank.db.query
 
-import cats.data.{Validated, ValidatedNel}
-import cats.implicits.catsSyntaxValidatedId
+import cats.implicits.catsSyntaxOptionId
 import crud.server.bank.db.table.ClientTable
 import slick.lifted.Rep
 
@@ -11,13 +10,13 @@ sealed trait ClientSortField[T] {
 
 object ClientSortField {
 
-  def fromString(s: String): Validated[String, ClientSortField[_]] = {
+  def fromString(s: String): Option[ClientSortField[_]] = {
     s match {
-      case "name"      => Name.valid
-      case "surname"   => Surname.valid
-      case "money"     => Money.valid
-      case "birthYear" => BirthYear.valid
-      case _           => s"Unknown sortBy type: $s".invalid
+      case "name"      => Name.some
+      case "surname"   => Surname.some
+      case "money"     => Money.some
+      case "birthYear" => BirthYear.some
+      case _           => None
     }
   }
 

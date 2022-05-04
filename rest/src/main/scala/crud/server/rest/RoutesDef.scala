@@ -4,7 +4,7 @@ import akka.http.scaladsl.marshalling.ToResponseMarshallable
 import akka.http.scaladsl.model.{HttpMethod, HttpMethods, StatusCodes}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.{Route, StandardRoute, ValidationRejection}
-import cats.data.Validated
+import cats.data.{Validated, ValidatedNel}
 import crud.server.api.metrics.MetricsRegistry
 import crud.server.api.query.{CreateQuery, GetManyQuery, UpdateQuery}
 import crud.server.api.search.SearchService
@@ -13,10 +13,9 @@ import crud.server.bank.db.search.{CreateQueryForm, ManyQueryForm, UpdateQueryFo
 import io.circe.Encoder
 import io.circe.generic.semiauto._
 import io.circe.syntax.EncoderOps
-import io.prometheus.client.{Counter, Gauge}
+import io.prometheus.client.Counter
 import slick.util.Logging
 import crud.server.rest.metrics.EndpointMetrics._
-import io.prometheus.client.exporter.common.TextFormat
 
 
 trait RoutesDef[M <: GetManyQuery, C <: CreateQuery, U <: UpdateQuery[Client]] extends Logging {
@@ -24,10 +23,10 @@ trait RoutesDef[M <: GetManyQuery, C <: CreateQuery, U <: UpdateQuery[Client]] e
 
   implicit private val clientEncoder: Encoder[Client] = deriveEncoder
 
-  private def route[T](v: Validated[String, T], onValid: T => Route): Route = {
+  private def route[T](v: ValidatedNel[String, T], onValid: T => Route): Route = {
     v match {
       case Validated.Valid(query) => onValid(query)
-      case Validated.Invalid(e)   => reject(ValidationRejection(e))
+      case Validated.Invalid(e)   => reject(ValidationRejection(e.iterator.mkString(",\n")))
     }
   }
 

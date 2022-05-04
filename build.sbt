@@ -25,6 +25,7 @@ val commonDependencies = Seq("org.scalatest" %% "scalatest" % scalatestVersion %
 lazy val root = project
   .in(file("."))
   .dependsOn(rest)
+  .aggregate(api, bank, rest)
 
 lazy val api = project
   .in(file("api"))

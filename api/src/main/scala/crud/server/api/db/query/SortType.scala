@@ -1,16 +1,15 @@
 package crud.server.api.db.query
 
-import cats.data.{Validated, ValidatedNel}
-import cats.implicits.catsSyntaxValidatedId
+import cats.implicits.catsSyntaxOptionId
 
 sealed trait SortType
 
 object SortType {
-  def fromString(s: String): Validated[String, SortType] = {
+  def fromString(s: String): Option[SortType] = {
     s match {
-      case "asc"  => Asc.valid
-      case "desc" => Desc.valid
-      case _      => s"Unknown sort type: $s".invalid
+      case "asc"  => Asc.some
+      case "desc" => Desc.some
+      case _      => None
     }
   }
 
